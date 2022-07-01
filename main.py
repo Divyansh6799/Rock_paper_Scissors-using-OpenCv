@@ -11,7 +11,6 @@ cap.set(3, 640)
 cap.set(4, 480)
 detector = HandDetector(maxHands=1)
 
-i=1
 timer = 0
 stateResult = False
 startGame = False
@@ -22,7 +21,6 @@ while True:
     success, img = cap.read()
     imgScaled = cv2.resize(img, (0, 0), None, 0.875, 0.875)
     imgScaled = imgScaled[:, 80:480]
-    gameresult=0
     # Find Hands
     hands, img = detector.findHands(imgScaled)  # with draw
     if startGame:
@@ -52,14 +50,12 @@ while True:
                             (playerMove == 2 and randomNumber == 1) or \
                             (playerMove == 3 and randomNumber == 2):
                         scores[1] += 1  
-                        gameresult=1   
-
+                        
                     # AI Wins
                     if (playerMove == 3 and randomNumber == 1) or \
                             (playerMove == 1 and randomNumber == 2) or \
                             (playerMove == 2 and randomNumber == 3):
                         scores[0] += 1
-                        gameresult=2
 
                     #draw
                     if (playerMove == 1 and randomNumber == 1) or \
@@ -67,17 +63,22 @@ while True:
                             (playerMove == 3 and randomNumber == 3):
                         scores[1] += 0     
                         scores[0] += 0    
-                        gameresult=3 
 
     imgBG[234:654, 795:1195] = imgScaled
     if stateResult:
         imgBG = cvzone.overlayPNG(imgBG, imgAI, (149, 310))
-        if gameresult==1:
-            cv2.putText(imgBG, "Player Wins", (390, 430), cv2.FONT_HERSHEY_PLAIN, 6, (100, 100, 255), 9)
-        if gameresult==2:
-            cv2.putText(imgBG, "AI Wins", (490, 430), cv2.FONT_HERSHEY_PLAIN, 6, (100, 100, 255), 9)
-        if gameresult==3:
-            cv2.putText(imgBG, "DRAW", (515, 430), cv2.FONT_HERSHEY_PLAIN, 6, (100, 100, 255), 9)
+        if (playerMove == 1 and randomNumber == 3) or \
+                            (playerMove == 2 and randomNumber == 1) or \
+                            (playerMove == 3 and randomNumber == 2):
+            cv2.putText(imgBG, "Player Wins", (390, 430), cv2.FONT_HERSHEY_PLAIN, 6, (0,0,255), 9)
+        if (playerMove == 3 and randomNumber == 1) or \
+                            (playerMove == 1 and randomNumber == 2) or \
+                            (playerMove == 2 and randomNumber == 3):
+            cv2.putText(imgBG, "AI Wins", (490, 430), cv2.FONT_HERSHEY_PLAIN, 6, (0,0,255), 9)
+        if (playerMove == 1 and randomNumber == 1) or \
+                            (playerMove == 2 and randomNumber == 2) or \
+                            (playerMove == 3 and randomNumber == 3):
+            cv2.putText(imgBG, "DRAW", (515, 430), cv2.FONT_HERSHEY_PLAIN, 6, (0,0,255), 9)
      
         
     cv2.putText(imgBG, str(scores[0]), (410, 215), cv2.FONT_HERSHEY_PLAIN, 4, (255, 255, 255), 6)
@@ -93,7 +94,6 @@ while True:
         startGame = True
         initialTime = time.time()
         stateResult = False
-        gameresult=0
 
     if key == ord('q'):
-        break    
+        break
